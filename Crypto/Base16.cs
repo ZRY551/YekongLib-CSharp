@@ -10,59 +10,44 @@ public class Base16
     // The base 16 alphabet
     private const string Alphabet = "0123456789ABCDEF";
 
-    public static byte[] Encode(string s)
+    public static byte[] Decode(string s)
     {
-        // Convert the input string to bytes using UTF-8 encoding
-        byte[] bytes = Encoding.UTF8.GetBytes(s);
+        // Check if the input is valid
+        if (s == null) throw new ArgumentNullException(nameof(s));
+        if (s.Length % 2 != 0) throw new ArgumentException("Invalid length", nameof(s));
+        if (s.Any(c => !Alphabet.Contains(c))) throw new ArgumentException("Invalid character", nameof(s));
 
-        // Create a StringBuilder to store the output
-        StringBuilder sb = new StringBuilder();
+        // Create a byte array to store the result
+        byte[] result = new byte[s.Length / 2];
 
-        // Loop through the input bytes
-        foreach (byte b in bytes)
-        {
-            // Encode the byte into 2 characters, using 4 bits per character
-            sb.Append(Alphabet[b >> 4]); // Get the high 4 bits and append the corresponding character
-            sb.Append(Alphabet[b & 0x0F]); // Get the low 4 bits and append the corresponding character
-        }
-
-        // Return the output as a byte array
-        return Encoding.ASCII.GetBytes(sb.ToString());
-    }
-
-    public static string Decode(byte[] b)
-    {
-        // Convert the input bytes to a string using ASCII encoding
-        string s = Encoding.ASCII.GetString(b);
-
-        // Check if the input is valid (length is even and contains only valid characters)
-        if (s.Length % 2 != 0 || s.Any(c => !Alphabet.Contains(c)))
-        {
-            throw new ArgumentException("Invalid base 16 input");
-        }
-
-        // Create a MemoryStream to store the output bytes
-        MemoryStream ms = new MemoryStream();
-
-        // Loop through the input string in groups of 2 characters
+        // Loop through the input string in pairs of two characters
         for (int i = 0; i < s.Length; i += 2)
         {
-            // Decode the group into a byte, using 4 bits per character
-            byte b2 = 0;
-
-            // Get the index of the first character in the alphabet and copy its bits to the high 4 bits of the byte
-            int index = Alphabet.IndexOf(s[i]);
-            b2 |= (byte)(index << 4);
-
-            // Get the index of the second character in the alphabet and copy its bits to the low 4 bits of the byte
-            index = Alphabet.IndexOf(s[i + 1]);
-            b2 |= (byte)index;
-
-            // Write the byte to the output stream
-            ms.WriteByte(b2);
+            // Convert each pair of characters to a byte value
+            result[i / 2] = Convert.ToByte(s.Substring(i, 2), 16);
         }
 
-        // Return the output as a string using UTF-8 encoding
-        return Encoding.UTF8.GetString(ms.ToArray());
+        // Return the result
+        return result;
+    }
+
+    public static string Encode(byte[] b)
+    {
+        // Check if the input is valid
+        if (b == null) throw new ArgumentNullException(nameof(b));
+
+        // Create a string builder to store the result
+        StringBuilder sb = new StringBuilder(b.Length * 2);
+
+        // Loop through the input byte array
+        foreach (byte x in b)
+        {
+            // Convert each byte value to a pair of characters
+            sb.Append(Alphabet[x >> 4]); // Get the high nibble
+            sb.Append(Alphabet[x & 0x0F]); // Get the low nibble
+        }
+
+        // Return the result
+        return sb.ToString();
     }
 }

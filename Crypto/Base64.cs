@@ -7,12 +7,12 @@ namespace YekongLib.Crypto;
 
 public class Base64
 {
-    public static byte[] Encode(string s)
+    public static byte[] Decode(string s)
     {
         return System.Convert.FromBase64String(s);
     }
 
-    public static string Decode(byte[] b)
+    public static string Encode(byte[] b)
     {
         return System.Convert.ToBase64String(b);
     }
