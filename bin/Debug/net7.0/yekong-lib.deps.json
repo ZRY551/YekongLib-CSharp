@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v7.0": {
-      "yekong-lib/1.0.0": {
+      "yekong-lib/1.1.0": {
         "runtime": {
           "yekong-lib.dll": {}
         }
@@ -14,7 +14,7 @@
     }
   },
   "libraries": {
-    "yekong-lib/1.0.0": {
+    "yekong-lib/1.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
