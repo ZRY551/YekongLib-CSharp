@@ -4,7 +4,6 @@ using System.Text;
 using System.IO;
 using System.Xml.Serialization;
 using System.Text.Json;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace YekongLib.Utils;
 
@@ -34,26 +33,9 @@ public class SerializerUtils
     }
 
     // Converts a JSON string to an object
-    public static T FromJson<T>(string json)
+    public static T? FromJson<T>(string json) // Add ? to indicate possible null return value
     {
-        return JsonSerializer.Deserialize<T>(json);
+        return JsonSerializer.Deserialize<T>(json) ?? default; // Use ?? to handle null value
     }
 
-    // Converts an object to a binary array
-    public static byte[] ToBinary<T>(T obj)
-    {
-        var formatter = new BinaryFormatter();
-        using var ms = new MemoryStream();
-        formatter.Serialize(ms, obj);
-        return ms.ToArray();
-    }
-
-    // Converts a binary array to an object
-    public static T FromBinary<T>(byte[] bytes)
-    {
-        var formatter = new BinaryFormatter();
-        using var ms = new MemoryStream(bytes);
-        return (T)formatter.Deserialize(ms);
-    }
 }
-
